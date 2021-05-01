@@ -1,9 +1,12 @@
 import http from "../axios";
 
 class PlaceDataService {
-  getAll() {
-    const token = sessionStorage.getItem('jwt')
-    return http.get("/parkings/types", {
+  login(data) {
+    return http.post("/auth/login", data);
+  }
+
+  logout(token) {
+    return http.get("/auth/logout", {
       headers: {
         Authorization: token
       }

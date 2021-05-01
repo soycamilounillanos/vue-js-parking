@@ -3,10 +3,10 @@
     <div class="col-md-8">
       <div class="input-group mb-3">
         <input type="text" class="form-control" placeholder="Buscar por identificacion"
-          v-model="title"/>
+          v-model="q"/>
         <div class="input-group-append">
           <button class="btn btn-outline-secondary" type="button"
-            @click="searchTitle"
+            @click="search"
           >
             Buscar
           </button>
@@ -45,9 +45,7 @@
           <label><strong>hours:</strong></label> {{ currentParking.hours || "Pendiente" }}
         </div>
         <div v-if="!currentParking.leaving_date">
-          <label><strong class="badge badge-warning" @click="checkout" >Salida</strong></label>
-          <br>
-          <router-link :to="'/parkings/' + currentParking.id" class="badge badge-warning">Actualizar</router-link>
+          <label><strong class="badge badge-warning" @click="checkout">Salida</strong></label>
         </div>
       </div>
       <div v-else>
@@ -68,14 +66,14 @@ export default {
       parkings: [],
       currentParking: null,
       currentIndex: -1,
-      title: ""
+      q: ""
     };
   },
   methods: {
     retrieveParkings() {
       ParkingDataService.getAll()
         .then(response => {
-          this.parkings = response.data.customers;
+          this.parkings = response.data.customers
           console.log(response.data);
         })
         .catch(e => {
@@ -95,19 +93,20 @@ export default {
     },
 
     checkout () {
-      ParkingDataService.checkout(this.currentIndex)
+      ParkingDataService.checkout(this.currentParking.id)
         .then(response => {
           console.log(response.data);
+          this.refreshList()
         })
         .catch(e => {
           console.log(e);
         });
     },
     
-    searchTitle() {
-      ParkingDataService.findByTitle(this.title)
+    search() {
+      ParkingDataService.search(this.q)
         .then(response => {
-          this.parkings = response.data;
+          this.parkings = response.data.customers
           console.log(response.data);
         })
         .catch(e => {
